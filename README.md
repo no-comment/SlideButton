@@ -2,6 +2,9 @@
 
 SlideButton is a SwiftUI package that provides a customizable slide button that can be swiped to unlock or perform an action. The button consists of a background color, a title, an icon, and an indicator that can be dragged horizontally to unlock or perform an action. The view provides several customizable styling options, such as the size and color of the indicator and background, the text alignment, and whether the text fades or hides behind the indicator.
 
+https://user-images.githubusercontent.com/20423069/232328779-f6ae204b-7ef6-4e96-93b0-8b7aa57e9617.mov
+
+
 ## Installation
 
 You can install SlideButton using Swift Package Manager. To add SlideButton to your Xcode project, go to `File` > `Swift Packages` > `Add Package Dependency` and enter the URL `https://github.com/no-comment/SlideButton`.
@@ -18,7 +21,7 @@ import SlideButton
 Create a `SlideButton` by providing a title and a callback that is executed when the user successfully swipes the indicator. The callback returns a `Bool?` value that determines whether to provide haptic feedback.
 
 ```swift
-SlideButton("Slide to Unlock") async {
+SlideButton("Slide to Unlock") {
     let success = await unlockDevice()
     return success
 }
@@ -41,7 +44,7 @@ let styling = SlideButton.Styling(
     textHiddenBehindIndicator: true
 )
 
-SlideButton("Slide to Unlock", styling: styling) async {
+SlideButton("Slide to Unlock", styling: styling) {
     let success = await unlockDevice()
     return success
 }
