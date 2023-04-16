@@ -33,6 +33,25 @@ public struct SlideButton: View {
         self._offset = .init(initialValue: styling.indicatorSpacing)
     }
     
+    /// Initializes a slide button with the given title, styling options, and callback.
+    ///
+    /// Use this initializer to create a new instance of `SlideButton` with the given title, styling, and callback. The `styling` parameter allows you to customize the appearance of the slide button, such as changing the size and color of the indicator, the alignment of the title text, and whether the text fades or hides behind the indicator. The `callback` parameter is executed when the user successfully swipes the indicator.
+    ///
+    /// - Parameters:
+    ///   - title: The title of the slide button.
+    ///   - styling: The styling options to customize the appearance of the slide button. Default is `.default`.
+    ///   - callback: The async callback that is executed when the user successfully swipes the indicator.
+    public init(_ title: String, styling: Styling = .default, callback: @escaping () async -> Void) {
+        self.title = title
+        self.callback = {
+            await callback()
+            return nil
+        }
+        self.styling = styling
+        
+        self._offset = .init(initialValue: styling.indicatorSpacing)
+    }
+    
     public var body: some View {
         GeometryReader { reading in
             let calculatedOffset: CGFloat = swipeState == .swiping ? offset : (swipeState == .start ? styling.indicatorSpacing : (reading.size.width - styling.indicatorSize + styling.indicatorSpacing))

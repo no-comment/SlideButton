@@ -18,7 +18,7 @@ import SwiftUI
 import SlideButton
 ```
 
-Create a `SlideButton` by providing a title and a callback that is executed when the user successfully swipes the indicator. The callback returns a `Bool?` value that determines whether to provide haptic feedback.
+Create a `SlideButton` by providing a title and a callback that will execute when the user successfully swipes the indicator. Optionally, you can inform the SlideButton whether the callback was successful to play haptic feedback.
 
 ```swift
 SlideButton("Slide to Unlock") {
