@@ -41,7 +41,8 @@ let styling = SlideButton.Styling(
     indicatorDisabledSystemName: "xmark",
     textAlignment: .center,
     textFadesOpacity: true,
-    textHiddenBehindIndicator: true
+    textHiddenBehindIndicator: true,
+    textShimmers: false
 )
 
 SlideButton("Slide to Unlock", styling: styling) {
