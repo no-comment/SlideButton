@@ -66,6 +66,7 @@ public struct SlideButton: View {
                             .foregroundColor(styling.textColor)
                             .frame(maxWidth: reading.size.width - 2 * styling.indicatorSpacing, alignment: .center)
                             .padding(.horizontal, styling.indicatorSize)
+                            .shimmerEffect(styling.textShimmers)
                     } else {
                         Text(title)
                             .multilineTextAlignment(styling.textAlignment.textAlignment)
@@ -73,6 +74,7 @@ public struct SlideButton: View {
                             .frame(maxWidth: reading.size.width - 2 * styling.indicatorSpacing, alignment: Alignment(horizontal: styling.textAlignment.horizontalAlignment, vertical: .center))
                             .padding(.trailing, styling.indicatorSpacing)
                             .padding(.leading, styling.indicatorSize)
+                            .shimmerEffect(styling.textShimmers)
                     }
                 }
                 .opacity(styling.textFadesOpacity ? (1 - progress(from: styling.indicatorSpacing, to: reading.size.width - styling.indicatorSize + styling.indicatorSpacing, current: calculatedOffset)) : 1)
@@ -186,6 +188,7 @@ public struct SlideButton: View {
         ///   - textAlignment: The alignment of the title text. Default is `.center`.
         ///   - textFadesOpacity: A Boolean value that determines whether the title text fades as the indicator is dragged. Default is `true`.
         ///   - textHiddenBehindIndicator: A Boolean value that determines whether the part of the title text that the indicator passes disappears. Default is `true`.
+        ///   - textShimmers: A Boolean value that determines whether the text should have a shimmering effect. Default is `true`.
         public init(
             indicatorSize: CGFloat = 60,
             indicatorSpacing: CGFloat = 5,
@@ -196,7 +199,8 @@ public struct SlideButton: View {
             indicatorDisabledSystemName: String = "xmark",
             textAlignment: SlideTextAlignment = .center,
             textFadesOpacity: Bool = true,
-            textHiddenBehindIndicator: Bool = true
+            textHiddenBehindIndicator: Bool = true,
+            textShimmers: Bool = false
         ) {
             self.indicatorSize = indicatorSize
             self.indicatorSpacing = indicatorSpacing
@@ -210,6 +214,7 @@ public struct SlideButton: View {
             self.textAlignment = textAlignment
             self.textFadesOpacity = textFadesOpacity
             self.textHiddenBehindIndicator = textHiddenBehindIndicator
+            self.textShimmers = textShimmers
         }
         
         fileprivate var indicatorSize: CGFloat
@@ -225,6 +230,7 @@ public struct SlideButton: View {
         fileprivate var textAlignment: SlideTextAlignment
         fileprivate var textFadesOpacity: Bool
         fileprivate var textHiddenBehindIndicator: Bool
+        fileprivate var textShimmers: Bool
         
         public static let `default`: Self = .init()
     }
