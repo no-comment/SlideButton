@@ -10,28 +10,12 @@ public struct SlideButton: View {
     @Environment(\.isEnabled) private var isEnabled
     
     private let title: String
-    private let callback: (() async -> Bool?)
+    private let callback: () async -> Void
     
     private let styling: Styling
     
     @GestureState private var offset: CGFloat
     @State private var swipeState: SwipeState = .start
-    
-    /// Initializes a slide button with the given title, styling options, and callback.
-    ///
-    /// Use this initializer to create a new instance of `SlideButton` with the given title, styling, and callback. The `styling` parameter allows you to customize the appearance of the slide button, such as changing the size and color of the indicator, the alignment of the title text, and whether the text fades or hides behind the indicator. The `callback` parameter is executed when the user successfully swipes the indicator, and returns a `Bool?` value that determines whether to provide success/error haptic feedback.
-    ///
-    /// - Parameters:
-    ///   - title: The title of the slide button.
-    ///   - styling: The styling options to customize the appearance of the slide button. Default is `.default`.
-    ///   - callback: The async callback that is executed when the user successfully swipes the indicator. The callback returns a `Bool?` value that determines whether to provide success/error haptic feedback.
-    public init(_ title: String, styling: Styling = .default, callback: @escaping () async -> Bool?) {
-        self.title = title
-        self.callback = callback
-        self.styling = styling
-        
-        self._offset = .init(initialValue: styling.indicatorSpacing)
-    }
     
     /// Initializes a slide button with the given title, styling options, and callback.
     ///
@@ -43,10 +27,7 @@ public struct SlideButton: View {
     ///   - callback: The async callback that is executed when the user successfully swipes the indicator.
     public init(_ title: String, styling: Styling = .default, callback: @escaping () async -> Void) {
         self.title = title
-        self.callback = {
-            await callback()
-            return nil
-        }
+        self.callback = callback
         self.styling = styling
         
         self._offset = .init(initialValue: styling.indicatorSpacing)
@@ -135,15 +116,9 @@ public struct SlideButton: View {
                                     Task {
                                         #if os(iOS)
                                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                                        let successFeedbackGenerator = UINotificationFeedbackGenerator()
-                                        successFeedbackGenerator.prepare()
                                         #endif
                                         
-                                        if let success = await callback() {
-                                            #if os(iOS)
-                                            successFeedbackGenerator.notificationOccurred(success ? .success : .error)
-                                            #endif
-                                        }
+                                        await callback()
                                         
                                         swipeState = .start
                                     }
@@ -282,11 +257,11 @@ struct SlideButton_Previews: PreviewProvider {
                     SlideButton("Leading text and no fade", styling: .init(textAlignment: .leading, textFadesOpacity: false), callback: sliderCallback)
                     SlideButton("Center text and no mask", styling: .init(textHiddenBehindIndicator: false), callback: sliderCallback)
                     SlideButton("Remaining space center", styling: .init(indicatorColor: .red, indicatorSystemName: "trash"), callback: sliderCallback)
-                    SlideButton("Trailing and immediate response", styling: .init(textAlignment: .trailing), callback: { .random() })
+                    SlideButton("Trailing and immediate response", styling: .init(textAlignment: .trailing), callback: sliderCallback)
                     SlideButton("Global center", styling: .init(indicatorColor: .red, indicatorSystemName: "trash", textAlignment: .globalCenter), callback: sliderCallback)
                     SlideButton("Spacing 15", styling: .init(indicatorSpacing: 15), callback: sliderCallback)
                     SlideButton("Big", styling: .init(indicatorSize: 100), callback: sliderCallback)
-                    SlideButton("disabled green", styling: .init(indicatorColor: .green), callback: sliderCallback)
+                    SlideButton("disabled green", styling: .init(indicatorColor: .green, textShimmers: true), callback: sliderCallback)
                         .disabled(true)
                     SlideButton("disabled", callback: sliderCallback)
                         .disabled(true)
@@ -294,9 +269,8 @@ struct SlideButton_Previews: PreviewProvider {
             }
         }
         
-        private func sliderCallback() async -> Bool? {
+        private func sliderCallback() async {
             try? await Task.sleep(for: .seconds(2))
-            return .random()
         }
     }
 

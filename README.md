@@ -18,12 +18,11 @@ import SwiftUI
 import SlideButton
 ```
 
-Create a `SlideButton` by providing a title and a callback that will execute when the user successfully swipes the indicator. Optionally, you can inform the SlideButton whether the callback was successful to play haptic feedback.
+Create a `SlideButton` by providing a title and a callback that will execute when the user successfully swipes the indicator. 
 
 ```swift
 SlideButton("Slide to Unlock") {
-    let success = await unlockDevice()
-    return success
+    await unlockDevice()
 }
 .padding()
 ```
@@ -46,8 +45,7 @@ let styling = SlideButton.Styling(
 )
 
 SlideButton("Slide to Unlock", styling: styling) {
-    let success = await unlockDevice()
-    return success
+    await unlockDevice()
 }
 .padding()
 ```
