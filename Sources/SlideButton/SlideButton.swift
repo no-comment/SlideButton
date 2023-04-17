@@ -47,7 +47,7 @@ public struct SlideButton: View {
                             .foregroundColor(styling.textColor)
                             .frame(maxWidth: reading.size.width - 2 * styling.indicatorSpacing, alignment: .center)
                             .padding(.horizontal, styling.indicatorSize)
-                            .shimmerEffect(styling.textShimmers)
+                            .shimmerEffect(isEnabled && styling.textShimmers)
                     } else {
                         Text(title)
                             .multilineTextAlignment(styling.textAlignment.textAlignment)
@@ -55,7 +55,7 @@ public struct SlideButton: View {
                             .frame(maxWidth: reading.size.width - 2 * styling.indicatorSpacing, alignment: Alignment(horizontal: styling.textAlignment.horizontalAlignment, vertical: .center))
                             .padding(.trailing, styling.indicatorSpacing)
                             .padding(.leading, styling.indicatorSize)
-                            .shimmerEffect(styling.textShimmers)
+                            .shimmerEffect(isEnabled && styling.textShimmers)
                     }
                 }
                 .opacity(styling.textFadesOpacity ? (1 - progress(from: styling.indicatorSpacing, to: reading.size.width - styling.indicatorSize + styling.indicatorSpacing, current: calculatedOffset)) : 1)
@@ -163,10 +163,10 @@ struct SlideButton_Previews: PreviewProvider {
                     SlideButton("Center text and no mask", styling: .init(textHiddenBehindIndicator: false), callback: sliderCallback)
                     SlideButton("Remaining space center", styling: .init(indicatorColor: .red, indicatorSystemName: "trash"), callback: sliderCallback)
                     SlideButton("Trailing and immediate response", styling: .init(textAlignment: .trailing), callback: sliderCallback)
-                    SlideButton("Global center", styling: .init(indicatorColor: .red, indicatorSystemName: "trash", textAlignment: .globalCenter), callback: sliderCallback)
+                    SlideButton("Global center", styling: .init(indicatorColor: .red, indicatorSystemName: "trash", textAlignment: .globalCenter, textShimmers: true), callback: sliderCallback)
                     SlideButton("Spacing 15", styling: .init(indicatorSpacing: 15), callback: sliderCallback)
                     SlideButton("Big", styling: .init(indicatorSize: 100), callback: sliderCallback)
-                    SlideButton("disabled green", styling: .init(indicatorColor: .green, textShimmers: true), callback: sliderCallback)
+                    SlideButton("disabled green", styling: .init(indicatorColor: .green), callback: sliderCallback)
                         .disabled(true)
                     SlideButton("disabled", callback: sliderCallback)
                         .disabled(true)
