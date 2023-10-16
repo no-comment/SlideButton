@@ -25,6 +25,7 @@ public extension SlideButton {
             indicatorSize: CGFloat = 60,
             indicatorSpacing: CGFloat = 5,
             indicatorColor: Color = .accentColor,
+            indicatorShape: ShapeType = .circular,
             backgroundColor: Color? = nil,
             textColor: Color = .secondary,
             indicatorSystemName: String = "chevron.right",
@@ -36,6 +37,7 @@ public extension SlideButton {
         ) {
             self.indicatorSize = indicatorSize
             self.indicatorSpacing = indicatorSpacing
+            self.indicatorShape = indicatorShape
             
             self.indicatorColor = indicatorColor
             self.backgroundColor = backgroundColor ?? indicatorColor.opacity(0.3)
@@ -51,6 +53,7 @@ public extension SlideButton {
         
         internal var indicatorSize: CGFloat
         internal var indicatorSpacing: CGFloat
+        internal var indicatorShape: ShapeType
         
         internal var indicatorColor: Color
         internal var backgroundColor: Color
@@ -65,7 +68,15 @@ public extension SlideButton {
         internal var textShimmers: Bool
         
         public static let `default`: Self = .init()
+        
     }
+    
+    enum ShapeType: Int {
+        case circular, rectangular
+        
+    }
+    
+    
     
     ///  An enumeration that defines the alignment options for the title text in a `SlideButton`.
     enum SlideTextAlignment {

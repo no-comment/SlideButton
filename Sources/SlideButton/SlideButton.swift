@@ -61,16 +61,10 @@ public struct GenericSlideButton<Label: View>: View {
         self._offset = .init(initialValue: styling.indicatorSpacing)
     }
     
-    public enum shapeType: Int {
-        case circular, rectangular
-        
-    }
-    
-    public var shape : shapeType = .rectangular
     
     @ViewBuilder
     private var indicatorShape : some View {
-        switch shape {
+        switch styling.indicatorShape {
         case .circular:
             Circle()
         case .rectangular:
@@ -81,9 +75,9 @@ public struct GenericSlideButton<Label: View>: View {
     
     @ViewBuilder
     private var mask : some View {
-        switch shape {
+        switch styling.indicatorShape {
         case .circular:
-            Circle()
+            Capsule()
         case .rectangular:
             RoundedRectangle(cornerSize: .init(width: 10, height: 10))
         }
