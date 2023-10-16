@@ -127,6 +127,7 @@ public struct GenericSlideButton<Label: View>: View {
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 
                 indicatorShape
+                    .brightness(isEnabled ? styling.indicatorBrightness : 0)
                     .frame(width: styling.indicatorSize - 2 * styling.indicatorSpacing, height: styling.indicatorSize - 2 * styling.indicatorSpacing)
                     .foregroundColor(isEnabled ? styling.indicatorColor : .gray)
                     .overlay(content: {

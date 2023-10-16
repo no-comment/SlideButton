@@ -26,6 +26,7 @@ public extension SlideButton {
             indicatorSpacing: CGFloat = 5,
             indicatorColor: Color = .accentColor,
             indicatorShape: ShapeType = .circular,
+            indicatorBrightness : Double = 0.0,
             backgroundColor: Color? = nil,
             textColor: Color = .secondary,
             indicatorSystemName: String = "chevron.right",
@@ -38,6 +39,7 @@ public extension SlideButton {
             self.indicatorSize = indicatorSize
             self.indicatorSpacing = indicatorSpacing
             self.indicatorShape = indicatorShape
+            self.indicatorBrightness = indicatorBrightness
             
             self.indicatorColor = indicatorColor
             self.backgroundColor = backgroundColor ?? indicatorColor.opacity(0.3)
@@ -54,6 +56,7 @@ public extension SlideButton {
         internal var indicatorSize: CGFloat
         internal var indicatorSpacing: CGFloat
         internal var indicatorShape: ShapeType
+        internal var indicatorBrightness: Double
         
         internal var indicatorColor: Color
         internal var backgroundColor: Color
