@@ -33,6 +33,34 @@ public struct SlideButton: View {
         self._offset = .init(initialValue: styling.indicatorSpacing)
     }
     
+    public enum shapeType: Int {
+        case circular, rectangular
+        
+    }
+    
+    public var shape : shapeType = .rectangular
+    
+    @ViewBuilder
+    private var indicatorShape : some View {
+        switch shape {
+        case .circular:
+            Circle()
+        case .rectangular:
+            RoundedRectangle(cornerSize: .init(width: 10, height: 10))
+        }
+        
+    }
+    
+    @ViewBuilder
+    private var mask : some View {
+        switch shape {
+        case .circular:
+            Circle()
+        case .rectangular:
+            RoundedRectangle(cornerSize: .init(width: 10, height: 10))
+        }
+    }
+    
     public var body: some View {
         GeometryReader { reading in
             let calculatedOffset: CGFloat = swipeState == .swiping ? offset : (swipeState == .start ? styling.indicatorSpacing : (reading.size.width - styling.indicatorSize + styling.indicatorSpacing))
@@ -76,7 +104,7 @@ public struct SlideButton: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 
-                Circle()
+                indicatorShape
                     .frame(width: styling.indicatorSize - 2 * styling.indicatorSpacing, height: styling.indicatorSize - 2 * styling.indicatorSpacing)
                     .foregroundColor(isEnabled ? styling.indicatorColor : .gray)
                     .overlay(content: {
@@ -131,7 +159,7 @@ public struct SlideButton: View {
                             }
                     )
             }
-            .mask({ Capsule() })
+            .mask({ mask })
         }
         .frame(height: styling.indicatorSize)
     }
