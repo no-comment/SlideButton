@@ -5,11 +5,39 @@
 
 import SwiftUI
 
-/// A view that presents a slide button that can be swiped to unlock or perform an action.
+//this maintains backcompat
 public struct SlideButton: View {
-    @Environment(\.isEnabled) private var isEnabled
+    public var title: String
+    public var styling: Styling = .default
+    public var callback: () async -> Void
     
-    private let title: String
+    /// Initializes a slide button with the given title, styling options, and callback.
+    ///
+    /// Use this initializer to create a new instance of `SlideButton` with the given title, styling, and callback. The `styling` parameter allows you to customize the appearance of the slide button, such as changing the size and color of the indicator, the alignment of the title text, and whether the text fades or hides behind the indicator. The `callback` parameter is executed when the user successfully swipes the indicator.
+    ///
+    /// - Parameters:
+    ///   - title: The title of the slide button.
+    ///   - styling: The styling options to customize the appearance of the slide button. Default is `.default`.
+    ///   - callback: The async callback that is executed when the user successfully swipes the indicator.
+    public init(_ title: String, styling: Styling = .default, callback: @escaping () async -> Void) {
+        self.title = title
+        self.styling = styling
+        self.callback = callback
+    }
+    
+    public var body: some View {
+        GenericSlideButton(Text(title), styling: styling, callback: callback)
+        
+    }
+    
+    
+}
+/// A view that presents a slide button that can be swiped to unlock or perform an action.
+public struct GenericSlideButton<Label: View>: View {
+    @Environment(\.isEnabled) private var isEnabled
+    public typealias Styling = SlideButton.Styling
+    
+    @ViewBuilder  private let title: Label
     private let callback: () async -> Void
     
     private let styling: Styling
@@ -25,7 +53,7 @@ public struct SlideButton: View {
     ///   - title: The title of the slide button.
     ///   - styling: The styling options to customize the appearance of the slide button. Default is `.default`.
     ///   - callback: The async callback that is executed when the user successfully swipes the indicator.
-    public init(_ title: String, styling: Styling = .default, callback: @escaping () async -> Void) {
+    public init(_ title: Label, styling: Styling = .default, callback: @escaping () async -> Void) {
         self.title = title
         self.callback = callback
         self.styling = styling
@@ -70,14 +98,14 @@ public struct SlideButton: View {
                 
                 ZStack {
                     if styling.textAlignment == .globalCenter {
-                        Text(title)
+                        title
                             .multilineTextAlignment(styling.textAlignment.textAlignment)
                             .foregroundColor(styling.textColor)
                             .frame(maxWidth: max(0, reading.size.width - 2 * styling.indicatorSpacing), alignment: .center)
                             .padding(.horizontal, styling.indicatorSize)
                             .shimmerEffect(isEnabled && styling.textShimmers)
                     } else {
-                        Text(title)
+                        title
                             .multilineTextAlignment(styling.textAlignment.textAlignment)
                             .foregroundColor(styling.textColor)
                             .frame(maxWidth: max(0, reading.size.width - 2 * styling.indicatorSpacing), alignment: Alignment(horizontal: styling.textAlignment.horizontalAlignment, vertical: .center))
@@ -177,6 +205,8 @@ public struct SlideButton: View {
         case start, swiping, end
     }
 }
+
+
 
 #if DEBUG
 @available(iOS 16.0, *)
