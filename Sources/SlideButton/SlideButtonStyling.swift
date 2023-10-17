@@ -5,7 +5,6 @@
 
 import SwiftUI
 
-
 ///  A struct that defines the styling options for a `SlideButton`.
 public struct SlideButtonStyling {
     /// Initializes a new `Styling` instance with the given options.
@@ -26,7 +25,7 @@ public struct SlideButtonStyling {
         indicatorSpacing: CGFloat = 5,
         indicatorColor: Color = .accentColor,
         indicatorShape: ShapeType = .circular,
-        indicatorBrightness : Double = 0.0,
+        indicatorBrightness: Double = 0.0,
         backgroundColor: Color? = nil,
         textColor: Color = .secondary,
         indicatorSystemName: String = "chevron.right",
@@ -53,33 +52,29 @@ public struct SlideButtonStyling {
         self.textShimmers = textShimmers
     }
     
-    internal var indicatorSize: CGFloat
-    internal var indicatorSpacing: CGFloat
-    internal var indicatorShape: ShapeType
-    internal var indicatorBrightness: Double
+    var indicatorSize: CGFloat
+    var indicatorSpacing: CGFloat
+    var indicatorShape: ShapeType
+    var indicatorBrightness: Double
     
-    internal var indicatorColor: Color
-    internal var backgroundColor: Color
-    internal var textColor: Color
+    var indicatorColor: Color
+    var backgroundColor: Color
+    var textColor: Color
     
-    internal var indicatorSystemName: String
-    internal var indicatorDisabledSystemName: String
+    var indicatorSystemName: String
+    var indicatorDisabledSystemName: String
     
-    internal var textAlignment: SlideTextAlignment
-    internal var textFadesOpacity: Bool
-    internal var textHiddenBehindIndicator: Bool
-    internal var textShimmers: Bool
+    var textAlignment: SlideTextAlignment
+    var textFadesOpacity: Bool
+    var textHiddenBehindIndicator: Bool
+    var textShimmers: Bool
     
     public static let `default`: Self = .init()
-    
 }
 
 public enum ShapeType {
-    case circular, rectangular(cornerRadius: Double?=0)
-    
+    case circular, rectangular(cornerRadius: Double? = 0)
 }
-
-
 
 ///  An enumeration that defines the alignment options for the title text in a `SlideButton`.
 public enum SlideTextAlignment {
@@ -92,7 +87,7 @@ public enum SlideTextAlignment {
     /// The title text is aligned to the trailing edge of the title space.
     case trailing
     
-    internal var horizontalAlignment: HorizontalAlignment {
+    var horizontalAlignment: HorizontalAlignment {
         switch self {
         case .leading:
             return .leading
@@ -103,7 +98,7 @@ public enum SlideTextAlignment {
         }
     }
     
-    internal var textAlignment: TextAlignment {
+    var textAlignment: TextAlignment {
         switch self {
         case .leading:
             return .leading
@@ -114,4 +109,3 @@ public enum SlideTextAlignment {
         }
     }
 }
-
