@@ -40,7 +40,7 @@ public struct SlideButton<Label: View>: View {
         case .circular:
             Circle()
         case .rectangular(let cornerRadius):
-            RoundedRectangle(cornerRadius: cornerRadius ?? 0)
+            RoundedRectangle(cornerRadius: max(0, (cornerRadius ?? 0) - styling.indicatorSpacing))
         }
     }
     
@@ -50,7 +50,7 @@ public struct SlideButton<Label: View>: View {
         case .circular:
             Capsule()
         case .rectangular(let cornerRadius):
-            RoundedRectangle(cornerRadius: cornerRadius ?? 0)
+            RoundedRectangle(cornerRadius: max(0, (cornerRadius ?? 0) - styling.indicatorSpacing))
         }
     }
     
