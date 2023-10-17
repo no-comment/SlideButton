@@ -5,39 +5,12 @@
 
 import SwiftUI
 
-//this maintains backcompat
-public struct SlideButton: View {
-    public var title: String
-    public var styling: Styling = .default
-    public var callback: () async -> Void
-    
-    /// Initializes a slide button with the given title, styling options, and callback.
-    ///
-    /// Use this initializer to create a new instance of `SlideButton` with the given title, styling, and callback. The `styling` parameter allows you to customize the appearance of the slide button, such as changing the size and color of the indicator, the alignment of the title text, and whether the text fades or hides behind the indicator. The `callback` parameter is executed when the user successfully swipes the indicator.
-    ///
-    /// - Parameters:
-    ///   - title: The title of the slide button.
-    ///   - styling: The styling options to customize the appearance of the slide button. Default is `.default`.
-    ///   - callback: The async callback that is executed when the user successfully swipes the indicator.
-    public init(_ title: String, styling: Styling = .default, callback: @escaping () async -> Void) {
-        self.title = title
-        self.styling = styling
-        self.callback = callback
-    }
-    
-    public var body: some View {
-        GenericSlideButton(Text(title), styling: styling, callback: callback)
-        
-    }
-    
-    
-}
+
 /// A view that presents a slide button that can be swiped to unlock or perform an action.
-public struct GenericSlideButton<Label: View>: View {
+public struct SlideButton<Label: View>: View {
     @Environment(\.isEnabled) private var isEnabled
-    public typealias Styling = SlideButton.Styling
-    
-    @ViewBuilder  private let title: Label
+    public typealias Styling  = SlideButtonStyling
+    private let title: Label
     private let callback: () async -> Void
     
     private let styling: Styling
@@ -50,14 +23,15 @@ public struct GenericSlideButton<Label: View>: View {
     /// Use this initializer to create a new instance of `SlideButton` with the given title, styling, and callback. The `styling` parameter allows you to customize the appearance of the slide button, such as changing the size and color of the indicator, the alignment of the title text, and whether the text fades or hides behind the indicator. The `callback` parameter is executed when the user successfully swipes the indicator.
     ///
     /// - Parameters:
-    ///   - title: The title of the slide button.
     ///   - styling: The styling options to customize the appearance of the slide button. Default is `.default`.
     ///   - callback: The async callback that is executed when the user successfully swipes the indicator.
-    public init(_ title: Label, styling: Styling = .default, callback: @escaping () async -> Void) {
-        self.title = title
+    ///   - label: The function creating a label view
+    
+    public init(styling: Styling = .default, callback: @escaping () async -> Void, @ViewBuilder label: () -> Label) {
+        self.title = label()
         self.callback = callback
         self.styling = styling
-        
+            
         self._offset = .init(initialValue: styling.indicatorSpacing)
     }
     
@@ -198,6 +172,16 @@ public struct GenericSlideButton<Label: View>: View {
     
     private enum SwipeState {
         case start, swiping, end
+    }
+}
+
+extension SlideButton where Label == Text {
+    public init(_ titleKey: LocalizedStringKey, styling: Styling = .default, callback: @escaping () async -> Void) {
+        self.init(styling: styling, callback: callback, label: { Text(titleKey) })
+    }
+    
+    public init<S>(_ title: S, styling: Styling = .default, callback: @escaping () async -> Void) where S: StringProtocol {
+        self.init(styling: styling, callback: callback, label: { Text(title) })
     }
 }
 
