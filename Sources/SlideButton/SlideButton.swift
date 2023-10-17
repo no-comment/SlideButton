@@ -5,14 +5,14 @@
 
 import SwiftUI
 
-
 /// A view that presents a slide button that can be swiped to unlock or perform an action.
 public struct SlideButton<Label: View>: View {
     @Environment(\.isEnabled) private var isEnabled
-    public typealias Styling  = SlideButtonStyling
+    
     private let title: Label
     private let callback: () async -> Void
     
+    public typealias Styling = SlideButtonStyling
     private let styling: Styling
     
     @GestureState private var offset: CGFloat
@@ -31,24 +31,22 @@ public struct SlideButton<Label: View>: View {
         self.title = label()
         self.callback = callback
         self.styling = styling
-            
+
         self._offset = .init(initialValue: styling.indicatorSpacing)
     }
     
-    
     @ViewBuilder
-    private var indicatorShape : some View {
+    private var indicatorShape: some View {
         switch styling.indicatorShape {
         case .circular:
             Circle()
         case .rectangular(let cornerRadius):
             RoundedRectangle(cornerRadius: cornerRadius ?? 0)
         }
-        
     }
     
     @ViewBuilder
-    private var mask : some View {
+    private var mask: some View {
         switch styling.indicatorShape {
         case .circular:
             Capsule()
