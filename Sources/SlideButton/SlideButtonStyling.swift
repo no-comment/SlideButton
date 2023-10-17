@@ -74,8 +74,8 @@ public extension SlideButton {
         
     }
     
-    enum ShapeType: Int {
-        case circular, rectangular
+    enum ShapeType {
+        case circular, rectangular(cornerRadius: Double?=0)
         
     }
     

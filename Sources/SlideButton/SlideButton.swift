@@ -67,8 +67,8 @@ public struct GenericSlideButton<Label: View>: View {
         switch styling.indicatorShape {
         case .circular:
             Circle()
-        case .rectangular:
-            RoundedRectangle(cornerSize: .init(width: 10, height: 10))
+        case .rectangular(let cornerRadius):
+            RoundedRectangle(cornerRadius: cornerRadius ?? 0)
         }
         
     }
@@ -78,8 +78,8 @@ public struct GenericSlideButton<Label: View>: View {
         switch styling.indicatorShape {
         case .circular:
             Capsule()
-        case .rectangular:
-            RoundedRectangle(cornerSize: .init(width: 10, height: 10))
+        case .rectangular(let cornerRadius):
+            RoundedRectangle(cornerRadius: cornerRadius ?? 0)
         }
     }
     
