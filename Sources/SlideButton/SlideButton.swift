@@ -8,16 +8,16 @@ import SwiftUI
 /// A view that presents a slide button that can be swiped to unlock or perform an action.
 public struct SlideButton<Label: View>: View {
     @Environment(\.isEnabled) private var isEnabled
-    
+
     private let title: Label
     private let callback: () async -> Void
-    
+
     public typealias Styling = SlideButtonStyling
     private let styling: Styling
-    
+
     @GestureState private var offset: CGFloat
     @State private var swipeState: SwipeState = .start
-    
+
     /// Initializes a slide button with the given title, styling options, and action.
     ///
     /// Use this initializer to create a new instance of `SlideButton` with the given title, styling, and callback. The `styling` parameter allows you to customize the appearance of the slide button, such as changing the size and color of the indicator, the alignment of the title text, and whether the text fades or hides behind the indicator. The `action` parameter is executed when the user successfully swipes the indicator.
@@ -33,34 +33,34 @@ public struct SlideButton<Label: View>: View {
 
         self._offset = .init(initialValue: styling.indicatorSpacing)
     }
-    
+
     @ViewBuilder
     private var indicatorShape: some View {
         switch styling.indicatorShape {
         case .circular:
             Circle()
-        case .rectangular(let cornerRadius):
+        case let .rectangular(cornerRadius):
             RoundedRectangle(cornerRadius: max(0, (cornerRadius ?? 0) - styling.indicatorSpacing))
         }
     }
-    
+
     @ViewBuilder
     private var mask: some View {
         switch styling.indicatorShape {
         case .circular:
             Capsule()
-        case .rectangular(let cornerRadius):
+        case let .rectangular(cornerRadius):
             RoundedRectangle(cornerRadius: cornerRadius ?? 0)
         }
     }
-    
+
     public var body: some View {
         GeometryReader { reading in
             let calculatedOffset: CGFloat = swipeState == .swiping ? offset : (swipeState == .start ? styling.indicatorSpacing : (reading.size.width - styling.indicatorSize + styling.indicatorSpacing))
             ZStack(alignment: .leading) {
                 styling.backgroundColor
                     .saturation(isEnabled ? 1 : 0)
-                
+
                 ZStack {
                     if styling.textAlignment == .globalCenter {
                         title
@@ -96,7 +96,7 @@ public struct SlideButton<Label: View>: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
-                
+
                 indicatorShape
                     .brightness(isEnabled ? styling.indicatorBrightness : 0)
                     .frame(width: styling.indicatorSize - 2 * styling.indicatorSpacing, height: styling.indicatorSize - 2 * styling.indicatorSpacing)
@@ -118,12 +118,12 @@ public struct SlideButton<Label: View>: View {
                         DragGesture()
                             .updating($offset) { value, state, transaction in
                                 guard swipeState != .end else { return }
-                                
+
                                 if swipeState == .start {
                                     DispatchQueue.main.async {
                                         swipeState = .swiping
                                         #if os(iOS)
-                                        UIImpactFeedbackGenerator(style: .light).prepare()
+                                            UIImpactFeedbackGenerator(style: .light).prepare()
                                         #endif
                                     }
                                 }
@@ -132,22 +132,22 @@ public struct SlideButton<Label: View>: View {
                             .onEnded { value in
                                 guard swipeState == .swiping else { return }
                                 swipeState = .end
-                                
+
                                 if value.predictedEndTranslation.width > reading.size.width
                                     || value.translation.width > reading.size.width - styling.indicatorSize - 2 * styling.indicatorSpacing {
                                     Task {
                                         #if os(iOS)
-                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                         #endif
-                                        
+
                                         await callback()
-                                        
+
                                         swipeState = .start
                                     }
                                 } else {
                                     swipeState = .start
                                     #if os(iOS)
-                                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                     #endif
                                 }
                             }
@@ -157,16 +157,16 @@ public struct SlideButton<Label: View>: View {
         }
         .frame(height: styling.indicatorSize)
     }
-    
+
     private func clampValue(value: CGFloat, min minValue: CGFloat, max maxValue: CGFloat) -> CGFloat {
         return max(minValue, min(maxValue, value))
     }
-    
+
     private func progress(from start: Double, to end: Double, current: Double) -> Double {
         let clampedCurrent = max(min(current, end), start)
         return (clampedCurrent - start) / (end - start)
     }
-    
+
     private enum SwipeState {
         case start, swiping, end
     }
@@ -181,7 +181,7 @@ public extension SlideButton where Label == Text {
     init(_ titleKey: LocalizedStringKey, styling: Styling = .default, action: @escaping () async -> Void) {
         self.init(styling: styling, action: action, label: { Text(titleKey) })
     }
-    
+
     @available(*, deprecated, renamed: "init(_:styling:action:)")
     init<S>(_ title: S, styling: Styling = .default, callback: @escaping () async -> Void) where S: StringProtocol {
         self.init(styling: styling, action: callback, label: { Text(title) })
@@ -193,36 +193,36 @@ public extension SlideButton where Label == Text {
 }
 
 #if DEBUG
-@available(iOS 16.0, *)
-@available(macOS 16.0, *)
-struct SlideButton_Previews: PreviewProvider {
-    struct ContentView: View {
-        var body: some View {
-            ScrollView {
-                VStack(spacing: 25) {
-                    SlideButton("Centered text and lorem ipsum dolor sit", action: sliderCallback)
-                    SlideButton("Leading text and no fade", styling: .init(textAlignment: .leading, textFadesOpacity: false), action: sliderCallback)
-                    SlideButton("Center text and no mask", styling: .init(textHiddenBehindIndicator: false), action: sliderCallback)
-                    SlideButton("Remaining space center", styling: .init(indicatorColor: .red, indicatorSystemName: "trash"), action: sliderCallback)
-                    SlideButton("Trailing and immediate response", styling: .init(textAlignment: .trailing), action: sliderCallback)
-                    SlideButton("Global center", styling: .init(indicatorColor: .red, indicatorSystemName: "trash", textAlignment: .globalCenter, textShimmers: true), action: sliderCallback)
-                    SlideButton("Spacing 15", styling: .init(indicatorSpacing: 15), action: sliderCallback)
-                    SlideButton("Big", styling: .init(indicatorSize: 100), action: sliderCallback)
-                    SlideButton("disabled green", styling: .init(indicatorColor: .green), action: sliderCallback)
-                        .disabled(true)
-                    SlideButton("disabled", action: sliderCallback)
-                        .disabled(true)
-                }.padding(.horizontal)
+    @available(iOS 16.0, *)
+    @available(macOS 16.0, *)
+    struct SlideButton_Previews: PreviewProvider {
+        struct ContentView: View {
+            var body: some View {
+                ScrollView {
+                    VStack(spacing: 25) {
+                        SlideButton("Centered text and lorem ipsum dolor sit", action: sliderCallback)
+                        SlideButton("Leading text and no fade", styling: .init(textAlignment: .leading, textFadesOpacity: false), action: sliderCallback)
+                        SlideButton("Center text and no mask", styling: .init(textHiddenBehindIndicator: false), action: sliderCallback)
+                        SlideButton("Remaining space center", styling: .init(indicatorColor: .red, indicatorSystemName: "trash"), action: sliderCallback)
+                        SlideButton("Trailing and immediate response", styling: .init(textAlignment: .trailing), action: sliderCallback)
+                        SlideButton("Global center", styling: .init(indicatorColor: .red, indicatorSystemName: "trash", textAlignment: .globalCenter, textShimmers: true), action: sliderCallback)
+                        SlideButton("Spacing 15", styling: .init(indicatorSpacing: 15), action: sliderCallback)
+                        SlideButton("Big", styling: .init(indicatorSize: 100), action: sliderCallback)
+                        SlideButton("disabled green", styling: .init(indicatorColor: .green), action: sliderCallback)
+                            .disabled(true)
+                        SlideButton("disabled", action: sliderCallback)
+                            .disabled(true)
+                    }.padding(.horizontal)
+                }
+            }
+
+            private func sliderCallback() async {
+                try? await Task.sleep(for: .seconds(2))
             }
         }
-        
-        private func sliderCallback() async {
-            try? await Task.sleep(for: .seconds(2))
+
+        static var previews: some View {
+            ContentView()
         }
     }
-
-    static var previews: some View {
-        ContentView()
-    }
-}
 #endif

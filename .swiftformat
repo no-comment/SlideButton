@@ -1,0 +1,2 @@
+--disable andOperator,redundantNilInit,redundantParens,redundantSelf,trailingClosures,unusedArguments,wrapMultilineStatementBraces
+--enable blankLineAfterImports,blankLinesBetweenImports

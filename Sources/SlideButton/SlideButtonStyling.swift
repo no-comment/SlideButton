@@ -39,11 +39,11 @@ public struct SlideButtonStyling {
         self.indicatorSpacing = indicatorSpacing
         self.indicatorShape = indicatorShape
         self.indicatorBrightness = indicatorBrightness
-        
+
         self.indicatorColor = indicatorColor
         self.backgroundColor = backgroundColor ?? indicatorColor.opacity(0.3)
         self.textColor = textColor
-        
+
         self.indicatorSystemName = indicatorSystemName
         self.indicatorDisabledSystemName = indicatorDisabledSystemName
         self.textAlignment = textAlignment
@@ -51,24 +51,24 @@ public struct SlideButtonStyling {
         self.textHiddenBehindIndicator = textHiddenBehindIndicator
         self.textShimmers = textShimmers
     }
-    
+
     var indicatorSize: CGFloat
     var indicatorSpacing: CGFloat
     var indicatorShape: ShapeType
     var indicatorBrightness: Double
-    
+
     var indicatorColor: Color
     var backgroundColor: Color
     var textColor: Color
-    
+
     var indicatorSystemName: String
     var indicatorDisabledSystemName: String
-    
+
     var textAlignment: SlideTextAlignment
     var textFadesOpacity: Bool
     var textHiddenBehindIndicator: Bool
     var textShimmers: Bool
-    
+
     public static let `default`: Self = .init()
 }
 
@@ -86,7 +86,7 @@ public enum SlideTextAlignment {
     case center
     /// The title text is aligned to the trailing edge of the title space.
     case trailing
-    
+
     var horizontalAlignment: HorizontalAlignment {
         switch self {
         case .leading:
@@ -97,7 +97,7 @@ public enum SlideTextAlignment {
             return .trailing
         }
     }
-    
+
     var textAlignment: TextAlignment {
         switch self {
         case .leading:
