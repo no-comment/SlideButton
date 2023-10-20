@@ -156,6 +156,19 @@ public struct SlideButton<Label: View>: View {
             .mask({ mask })
         }
         .frame(height: styling.indicatorSize)
+        .accessibilityRepresentation {
+            Button(action: {
+                swipeState = .end
+
+                Task {
+                    await callback()
+                    swipeState = .start
+                }
+            }, label: {
+                title
+            })
+            .disabled(swipeState != .start)
+        }
     }
 
     private func clampValue(value: CGFloat, min minValue: CGFloat, max maxValue: CGFloat) -> CGFloat {
