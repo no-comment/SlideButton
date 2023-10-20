@@ -146,7 +146,6 @@ public struct SlideButton<Label: View>: View {
                                     }
                                 } else {
                                     swipeState = .start
-                                    print("callback will not be called")
 #if os(iOS)
                                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
 #endif
@@ -163,7 +162,6 @@ public struct SlideButton<Label: View>: View {
 #if os(iOS)
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
 #endif
-            print("test")
             
             Task {
                 await callback()
