@@ -122,9 +122,9 @@ public struct SlideButton<Label: View>: View {
                                 if swipeState == .start {
                                     DispatchQueue.main.async {
                                         swipeState = .swiping
-#if os(iOS)
+                                        #if os(iOS)
                                         UIImpactFeedbackGenerator(style: .light).prepare()
-#endif
+                                        #endif
                                     }
                                 }
                                 state = clampValue(value: value.translation.width, min: styling.indicatorSpacing, max: reading.size.width - styling.indicatorSize + styling.indicatorSpacing)
@@ -136,9 +136,9 @@ public struct SlideButton<Label: View>: View {
                                 if value.predictedEndTranslation.width > reading.size.width
                                     || value.translation.width > reading.size.width - styling.indicatorSize - 2 * styling.indicatorSpacing {
                                     Task {
-#if os(iOS)
+                                        #if os(iOS)
                                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
-#endif
+                                        #endif
                                         
                                         await callback()
                                         
@@ -146,9 +146,9 @@ public struct SlideButton<Label: View>: View {
                                     }
                                 } else {
                                     swipeState = .start
-#if os(iOS)
+                                    #if os(iOS)
                                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
-#endif
+                                    #endif
                                 }
                             }
                     )
@@ -156,12 +156,11 @@ public struct SlideButton<Label: View>: View {
             .mask({ mask })
         }
         .frame(height: styling.indicatorSize)
-        
         .accessibilityAction{
             swipeState = .end
-#if os(iOS)
+            #if os(iOS)
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
-#endif
+            #endif
             
             Task {
                 await callback()
