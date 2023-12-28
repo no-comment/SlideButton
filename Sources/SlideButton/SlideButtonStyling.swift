@@ -25,6 +25,7 @@ public struct SlideButtonStyling {
         indicatorSpacing: CGFloat = 5,
         indicatorColor: Color = .accentColor,
         indicatorShape: ShapeType = .circular,
+        indicatorRotatesForRTL: Bool = true,
         indicatorBrightness: Double = 0.0,
         backgroundColor: Color? = nil,
         textColor: Color = .secondary,
@@ -39,6 +40,7 @@ public struct SlideButtonStyling {
         self.indicatorSpacing = indicatorSpacing
         self.indicatorShape = indicatorShape
         self.indicatorBrightness = indicatorBrightness
+        self.indicatorRotatesForRTL = indicatorRotatesForRTL
 
         self.indicatorColor = indicatorColor
         self.backgroundColor = backgroundColor ?? indicatorColor.opacity(0.3)
@@ -50,11 +52,13 @@ public struct SlideButtonStyling {
         self.textFadesOpacity = textFadesOpacity
         self.textHiddenBehindIndicator = textHiddenBehindIndicator
         self.textShimmers = textShimmers
+        
     }
 
     var indicatorSize: CGFloat
     var indicatorSpacing: CGFloat
     var indicatorShape: ShapeType
+    var indicatorRotatesForRTL: Bool
     var indicatorBrightness: Double
 
     var indicatorColor: Color

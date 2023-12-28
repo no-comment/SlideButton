@@ -118,6 +118,7 @@ public struct SlideButton<Label: View>: View {
                                 .foregroundColor(.white)
                                 .font(.system(size: max(0.4 * styling.indicatorSize, 0.5 * styling.indicatorSize - 2 * styling.indicatorSpacing), weight: .semibold))
                                 .opacity(swipeState == .end ? 0 : 1)
+                                .rotationEffect(Angle(degrees: styling.indicatorRotatesForRTL && self.layoutDirection == .rightToLeft ? 0 : 180))
                         }
                     })
                     .offset(x: calculatedOffset)
