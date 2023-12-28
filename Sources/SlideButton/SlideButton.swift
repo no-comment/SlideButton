@@ -17,6 +17,8 @@ public struct SlideButton<Label: View>: View {
 
     @GestureState private var offset: CGFloat
     @State private var swipeState: SwipeState = .start
+    
+    @Environment(\.layoutDirection) private var layoutDirection
 
     /// Initializes a slide button with the given title, styling options, and action.
     ///
@@ -127,23 +129,45 @@ public struct SlideButton<Label: View>: View {
                                         #endif
                                     }
                                 }
-                                state = clampValue(value: value.translation.width, min: styling.indicatorSpacing, max: reading.size.width - styling.indicatorSize + styling.indicatorSpacing)
+                                /**
+                                 swipe gesture updated: value: 374.0, min: 5.0, max: 343.0, clamped: 343.0
+                                 swipe gesture updated: value: 374.3333282470703, min: 5.0, max: 343.0, clamped: 343.0
+                                 swipe gesture updated: value: 375.3333282470703, min: 5.0, max: 343.0, clamped: 343.0
+                                 swipe gesture updated: value: 376.0, min: 5.0, max: 343.0, clamped: 343.0
+                                 swipe gesture updated: value: 376.6666717529297, min: 5.0, max: 343.0, clamped: 343.0
+                                 swipe gesture updated: value: 377.0, min: 5.0, max: 343.0, clamped: 343.0
+                                 swipe gesture updated: value: 377.0, min: 5.0, max: 343.0, clamped: 343.0
+                                 */
+                                
+                                var val = value.translation.width * (self.layoutDirection == .rightToLeft ?  -1 : 1)
+                                
+                                state = clampValue(value: val, min: styling.indicatorSpacing, max: reading.size.width - styling.indicatorSize + styling.indicatorSpacing)
+                                
+                                
+                                print("swipe gesture updated: value: \(value.translation.width), min: \(styling.indicatorSpacing), max: \(reading.size.width - styling.indicatorSize + styling.indicatorSpacing), clamped: \(state)")
                             }
                             .onEnded { value in
                                 guard swipeState == .swiping else { return }
                                 swipeState = .end
+                                
+                                var predictedVal = value.predictedEndTranslation.width * (self.layoutDirection == .rightToLeft ?  -1 : 1)
+                                var val = value.translation.width * (self.layoutDirection == .rightToLeft ?  -1 : 1)
 
-                                if value.predictedEndTranslation.width > reading.size.width
-                                    || value.translation.width > reading.size.width - styling.indicatorSize - 2 * styling.indicatorSpacing {
+                                /**
+                                 swipe gesture updated: value: 358.0, min: 5.0, max: 343.0, clamped: 343.0
+                                 swipe gesture updated: value: 358.6666564941406, min: 5.0, max: 343.0, clamped: 343.0
+                                 ended with value: 363.9775497889138, totalwidth: 398.0
+                                 */
+
+                                if predictedVal > reading.size.width
+                                    || val > reading.size.width - styling.indicatorSize - 2 * styling.indicatorSpacing {
                                     Task {
                                         #if os(iOS)
                                             UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                         #endif
 
                                         await callback()
-
-                                        swipeState = .start
-                                    }
+                                        
                                 } else {
                                     swipeState = .start
                                     #if os(iOS)
