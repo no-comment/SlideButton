@@ -136,22 +136,12 @@ public struct SlideButton<Label: View>: View {
                                         #endif
                                     }
                                 }
-                                /**
-                                 swipe gesture updated: value: 374.0, min: 5.0, max: 343.0, clamped: 343.0
-                                 swipe gesture updated: value: 374.3333282470703, min: 5.0, max: 343.0, clamped: 343.0
-                                 swipe gesture updated: value: 375.3333282470703, min: 5.0, max: 343.0, clamped: 343.0
-                                 swipe gesture updated: value: 376.0, min: 5.0, max: 343.0, clamped: 343.0
-                                 swipe gesture updated: value: 376.6666717529297, min: 5.0, max: 343.0, clamped: 343.0
-                                 swipe gesture updated: value: 377.0, min: 5.0, max: 343.0, clamped: 343.0
-                                 swipe gesture updated: value: 377.0, min: 5.0, max: 343.0, clamped: 343.0
-                                 */
                                 
                                 let val = value.translation.width * layoutDirectionMultiplier
                                 
                                 state = clampValue(value: val, min: styling.indicatorSpacing, max: reading.size.width - styling.indicatorSize + styling.indicatorSpacing)
                                 
-                                
-                                print("swipe gesture updated: value: \(value.translation.width), min: \(styling.indicatorSpacing), max: \(reading.size.width - styling.indicatorSize + styling.indicatorSpacing), clamped: \(state)")
+                               
                             }
                             .onEnded { value in
                                 guard swipeState == .swiping else { return }
@@ -160,18 +150,12 @@ public struct SlideButton<Label: View>: View {
                                 let predictedVal = value.predictedEndTranslation.width * layoutDirectionMultiplier
                                 let val = value.translation.width * layoutDirectionMultiplier
 
-                                /**
-                                 swipe gesture updated: value: 358.0, min: 5.0, max: 343.0, clamped: 343.0
-                                 swipe gesture updated: value: 358.6666564941406, min: 5.0, max: 343.0, clamped: 343.0
-                                 ended with value: 363.9775497889138, totalwidth: 398.0
-                                 */
-
                                 if predictedVal > reading.size.width
                                     || val > reading.size.width - styling.indicatorSize - 2 * styling.indicatorSpacing {
                                     Task {
-#if os(iOS)
-                                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-#endif
+                                        #if os(iOS)
+                                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                        #endif
                                         
                                         await callback()
                                         swipeState = .start
