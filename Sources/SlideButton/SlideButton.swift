@@ -156,7 +156,7 @@ public struct SlideButton<Label: View>: View {
                                 guard swipeState == .swiping else { return }
                                 swipeState = .end
                                 
-                                var predictedVal = value.predictedEndTranslation.width * layoutDirectionMultiplier
+                                let predictedVal = value.predictedEndTranslation.width * layoutDirectionMultiplier
                                 let val = value.translation.width * layoutDirectionMultiplier
 
                                 /**
@@ -174,7 +174,7 @@ public struct SlideButton<Label: View>: View {
                                         
                                         await callback()
                                         swipeState = .start
-                                }
+                                    }
                                         
                                 } else {
                                     swipeState = .start
