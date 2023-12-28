@@ -19,6 +19,12 @@ public struct SlideButton<Label: View>: View {
     @State private var swipeState: SwipeState = .start
     
     @Environment(\.layoutDirection) private var layoutDirection
+    
+    // When layoutdirection is RTL, the indicatorshape will be right aligned
+    // instead of left aligned and values need to be negated
+    private var layoutDirectionMultiplier : Double {
+        self.layoutDirection == .rightToLeft ?  -1 : 1
+    }
 
     /// Initializes a slide button with the given title, styling options, and action.
     ///
@@ -139,7 +145,7 @@ public struct SlideButton<Label: View>: View {
                                  swipe gesture updated: value: 377.0, min: 5.0, max: 343.0, clamped: 343.0
                                  */
                                 
-                                var val = value.translation.width * (self.layoutDirection == .rightToLeft ?  -1 : 1)
+                                let val = value.translation.width * layoutDirectionMultiplier
                                 
                                 state = clampValue(value: val, min: styling.indicatorSpacing, max: reading.size.width - styling.indicatorSize + styling.indicatorSpacing)
                                 
@@ -150,8 +156,8 @@ public struct SlideButton<Label: View>: View {
                                 guard swipeState == .swiping else { return }
                                 swipeState = .end
                                 
-                                var predictedVal = value.predictedEndTranslation.width * (self.layoutDirection == .rightToLeft ?  -1 : 1)
-                                var val = value.translation.width * (self.layoutDirection == .rightToLeft ?  -1 : 1)
+                                var predictedVal = value.predictedEndTranslation.width * layoutDirectionMultiplier
+                                let val = value.translation.width * layoutDirectionMultiplier
 
                                 /**
                                  swipe gesture updated: value: 358.0, min: 5.0, max: 343.0, clamped: 343.0
