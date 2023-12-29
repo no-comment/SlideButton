@@ -18,6 +18,14 @@ public struct SlideButton<Label: View>: View {
     @GestureState private var offset: CGFloat
     @State private var swipeState: SwipeState = .start
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
+    // When layoutdirection is RTL, the indicatorshape will be right aligned
+    // instead of left aligned and values need to be negated
+    private var layoutDirectionMultiplier: Double {
+        self.layoutDirection == .rightToLeft ? -1 : 1
+    }
+
     /// Initializes a slide button with the given title, styling options, and action.
     ///
     /// Use this initializer to create a new instance of `SlideButton` with the given title, styling, and callback. The `styling` parameter allows you to customize the appearance of the slide button, such as changing the size and color of the indicator, the alignment of the title text, and whether the text fades or hides behind the indicator. The `action` parameter is executed when the user successfully swipes the indicator.
@@ -110,6 +118,7 @@ public struct SlideButton<Label: View>: View {
                                 .foregroundColor(.white)
                                 .font(.system(size: max(0.4 * styling.indicatorSize, 0.5 * styling.indicatorSize - 2 * styling.indicatorSpacing), weight: .semibold))
                                 .opacity(swipeState == .end ? 0 : 1)
+                                .rotationEffect(Angle(degrees: styling.indicatorRotatesForRTL && self.layoutDirection == .rightToLeft ? 180 : 0))
                         }
                     })
                     .offset(x: calculatedOffset)
@@ -127,23 +136,29 @@ public struct SlideButton<Label: View>: View {
                                         #endif
                                     }
                                 }
-                                state = clampValue(value: value.translation.width, min: styling.indicatorSpacing, max: reading.size.width - styling.indicatorSize + styling.indicatorSpacing)
+
+                                let val = value.translation.width * layoutDirectionMultiplier
+
+                                state = clampValue(value: val, min: styling.indicatorSpacing, max: reading.size.width - styling.indicatorSize + styling.indicatorSpacing)
                             }
                             .onEnded { value in
                                 guard swipeState == .swiping else { return }
                                 swipeState = .end
 
-                                if value.predictedEndTranslation.width > reading.size.width
-                                    || value.translation.width > reading.size.width - styling.indicatorSize - 2 * styling.indicatorSpacing {
+                                let predictedVal = value.predictedEndTranslation.width * layoutDirectionMultiplier
+                                let val = value.translation.width * layoutDirectionMultiplier
+
+                                if predictedVal > reading.size.width
+                                    || val > reading.size.width - styling.indicatorSize - 2 * styling.indicatorSpacing {
                                     Task {
                                         #if os(iOS)
                                             UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                         #endif
 
                                         await callback()
-
                                         swipeState = .start
                                     }
+
                                 } else {
                                     swipeState = .start
                                     #if os(iOS)

@@ -12,6 +12,9 @@ public struct SlideButtonStyling {
     ///   - indicatorSize: The size of the indicator. Default is `60`.
     ///   - indicatorSpacing: The spacing between the indicator and the border / button title. Default is `5`.
     ///   - indicatorColor: The color of the indicator. Default is `.accentColor`.
+    ///   - indicatorShape: The shape type of the indicator. Default is `.circular`.
+    ///   - indicatorRotatesForRTL: Whether to rotate the indicator for right-to-left layout or not. Default is `true`.
+    ///   - indicatorBrightness: The brightness of the indicator if enabled. Default is `0.0`.
     ///   - backgroundColor: The color of the background. Default is `nil`, which sets the background color to a 30% opacity version of the indicator color.
     ///   - textColor: The color of the title text. Default is `.secondary`.
     ///   - indicatorSystemName: The system name of the icon used for the indicator. Default is `"chevron.right"`.
@@ -25,6 +28,7 @@ public struct SlideButtonStyling {
         indicatorSpacing: CGFloat = 5,
         indicatorColor: Color = .accentColor,
         indicatorShape: ShapeType = .circular,
+        indicatorRotatesForRTL: Bool = true,
         indicatorBrightness: Double = 0.0,
         backgroundColor: Color? = nil,
         textColor: Color = .secondary,
@@ -39,6 +43,7 @@ public struct SlideButtonStyling {
         self.indicatorSpacing = indicatorSpacing
         self.indicatorShape = indicatorShape
         self.indicatorBrightness = indicatorBrightness
+        self.indicatorRotatesForRTL = indicatorRotatesForRTL
 
         self.indicatorColor = indicatorColor
         self.backgroundColor = backgroundColor ?? indicatorColor.opacity(0.3)
@@ -55,6 +60,7 @@ public struct SlideButtonStyling {
     var indicatorSize: CGFloat
     var indicatorSpacing: CGFloat
     var indicatorShape: ShapeType
+    var indicatorRotatesForRTL: Bool
     var indicatorBrightness: Double
 
     var indicatorColor: Color
